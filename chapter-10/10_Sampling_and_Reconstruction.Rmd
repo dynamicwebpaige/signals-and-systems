@@ -1,0 +1,13 @@
+---
+title: "Chapter 10: Sampling and Reconstruction"
+author: "Paige Bailey"
+date: "March 31, 2017"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
