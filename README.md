@@ -4,7 +4,9 @@
 
 > from _**Digital Signal Processing**_, by Alan V. Oppenheim and Ronald W. Schafer
 
-The purpose of this repository is to provide visual accompaniments to the open-source textbook *Signals and Systems* (Richard Baraniuk et al). All images, HTML files, and interactive visualizations are created using R.
+-----
+
+The purpose of this repository is to provide *interactive* visual accompaniments to the open-source textbook *Signals and Systems* (Richard Baraniuk et al). All images, HTML files, and interactive media are created using R, with the motivation of enabling students to begin ['thinking the unthinkable'](http://worrydream.com/MediaForThinkingTheUnthinkable/).
 
 ------
 ![alt text](https://github.com/dynamicwebpaige/signals-and-systems/blob/master/Rplot.png "Fig. 1: Example of Filtering")
