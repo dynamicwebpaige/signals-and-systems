@@ -1,0 +1,44 @@
+---
+title: "Chapter 1: Introduction to Signals"
+output:
+  html_document:
+    theme: "sandstone"
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+------
+
+![](http://f3dev.co.za/s3min/wp-content/uploads/bfi_thumb/Digital-Signal-Processing-mkyku41elkq1lo9ritzomoh6fhzi17i9i52079367o.jpg "Digital Signal Processing")
+
+------
+
+## **Signal Classifications and Properties**
+
+------
+
+### _Introduction_
+This module will begin our study of signals and systems by laying out some of the fundamentals of signal classification. It is essentially an introduction to the important definitions and properties that are fundamental to the discussion of signals and systems, with a brief discussion of each.
+
+------
+
+## **Classification of Signals**
+
+------
+
+### Continuous-Time vs. Discrete Time
+As the names suggest, this classification is determined by whether or not the time axis is **discrete** (countable) or **continuous** (*Figure 1.1*). A continuous-time signal will contain a value for all real numbers along the time axis. In contrast to this, a discrete-time signal, often created by sampling a continuous signal, will only have values at equally spaced intervals along the time axis.
+
+### Analog vs. Digital
+The difference between **analog** and **digital** is similar to the difference between continuous-time and discrete-time. However, in this case the difference involves the values of the function. Analog corresponds to a continuous set of possible function values, while digital corresponds to a discrete set of possible function values. A common example of a digital signal is a *binary sequence*, where the values of the function can only be one or zero.
+
+### Periodic vs. Aperiodic
+Periodic signals (Section 6.1) repeat with some **period** _T_, while aperiodic, or nonperiodic, signals do not (Figure 1.3). We can define a periodic function through the following mathematical expression, where i can be any number and T is a positive constant: 
+
+$$ f(t) = f(t + T) $$
+
+The **fundamental period** of our funcion, f(t), is the smallest value of T that still allows (1.1) to be true.
