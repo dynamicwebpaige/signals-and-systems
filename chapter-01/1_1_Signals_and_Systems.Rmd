@@ -31,7 +31,7 @@ This module will begin our study of signals and systems by laying out some of th
 
 ------
 
-### Continuous-Time vs. Discrete Time
+### _Continuous-Time vs. Discrete Time_
 As the names suggest, this classification is determined by whether or not the time axis is **discrete** (countable) or **continuous** (*Figure 1.1*). A continuous-time signal will contain a value for all real numbers along the time axis. In contrast to this, a discrete-time signal, often created by sampling a continuous signal, will only have values at equally spaced intervals along the time axis.
 
 ``` {r, echo = FALSE}
@@ -39,7 +39,7 @@ f <- ggplot(data.frame(x = c(0,10)), aes(x))
 f + stat_function(fun = sin, colour = "blue") + xlab("Fig. 1.1: Continuous Function") + ylab("")
 ```
 
-### Analog vs. Digital
+### _Analog vs. Digital_
 The difference between **analog** and **digital** is similar to the difference between continuous-time and discrete-time. However, in this case the difference involves the values of the function. Analog corresponds to a continuous set of possible function values, while digital corresponds to a discrete set of possible function values. A common example of a digital signal is a *binary sequence*, where the values of the function can only be one or zero.
 
 ``` {r echo = FALSE}
@@ -48,14 +48,14 @@ ggplot() + geom_step(data = d, mapping=aes(x = x, y = y)) +
   ylab("") + xlab("Figure 1.2: Step Function")
 ```
 
-### Periodic vs. Aperiodic
+### _Periodic vs. Aperiodic_
 Periodic signals (Section 6.1) repeat with some **period** $T$, while aperiodic, or nonperiodic, signals do not ($Figure 1.3$). We can define a periodic function through the following mathematical expression, where $i$ can be any number and $T$ is a positive constant: 
 
 $$ f(t) = f(t + T) $$
 
 The **fundamental period** of our funcion, $f(t)$, is the smallest value of $T$ that still allows (1.1) to be true.
 
-### Finite vs. Infinite Length
+### _Finite vs. Infinite Length_
 Another way of classifying a signal is in terms of its length along its time axis. Is the signal defined for all possible values of time, or for only certain values of time? Mathematically speaking, $f(t)$ is a **finite-length signal** if it is **defined** only over a finite interval.
 
 $$ t_{1} < t < t_{2} $$
@@ -64,10 +64,10 @@ where t1 < t2. Similarly, an **infinite-length signal**, f(t), is defined for al
 
 $$ -\infty < t < \infty $$
 
-### Causal vs. Anticausal vs. Noncausal
+### _Causal vs. Anticausal vs. Noncausal_
 **Causal** signals are signals that are zero for all negative time, while **anticausal** are signals that are zero for all positive time. **Noncausal signals** are signals that have unzero values in both positive and negative time ($Figure 1.4$).
 
-### Even vs. Odd
+### _Even vs. Odd_
 An **even signal** is any signal $f$ such that $f(t) = f(-t)$. Even signals can be easily spotted as they are **symmetric** around the vertical axis. An **odd signal**, on the other hand, is a signal $f$ such that $f(t) = -f(-t)$ ($Figure 1.5$).
 
 Using the definitions of even and off signals, we can show that any signal can be written as a combination of an even and odd signal. That is, every signal has an odd-even decomposition. To demonstrate this, we have to look no farther than a single equation.
@@ -76,16 +76,14 @@ $$ f(t) = \frac{1}{2} (f(t) + f(-t)) + \frac{1}{2} (f(t) - f(-t)) $$
 
 By multiplying and adding this expression out, it can be shown to be true. Also, it can be shown that $f(t) + f(-t)$ fulfills the requirement of an even function, while $f(t) - f(-t)$ fulfills the requirement of an odd function ($Figure 1.6$).
 
-### Deterministic vs. Random
+### _Deterministic vs. Random_
 A **deterministic signal** is a signal in which each value of the signal is fixed, being determined by a mathematical expression, rule, or table. On the other hand, the values of a **random signal** are not strictly defined, but are subject to some amount of variability.
 
 ------
 
-## Signal Size and Norms
+## **Signal Size and Norms**
 
 ------
-
-####< continue with data for Chapter 1 >
 
 ------
 
