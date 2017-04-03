@@ -6,7 +6,7 @@
 
 -----
 
-The purpose of this repository is to provide interactive, explorable visual accompaniments to the open-source textbook *Signals and Systems* (Richard Baraniuk et al). All images, HTML files, and interactive media are created using R, with the motivation of enabling students to begin ['thinking the unthinkable'](http://worrydream.com/MediaForThinkingTheUnthinkable/). 
+The purpose of this repository is to provide interactive, explorable visual accompaniments to the open-source textbook *Signals and Systems* ([Richard Baraniuk](http://richb.rice.edu/signal-processing/) et al). All images, HTML files, and interactive media are created using R, with the motivation of enabling students to begin ['thinking the unthinkable'](http://worrydream.com/MediaForThinkingTheUnthinkable/). 
 
 ------
 ![alt text](https://github.com/dynamicwebpaige/signals-and-systems/blob/master/Rplot.png "Fig. 1: Example of Filtering")
