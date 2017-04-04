@@ -1,0 +1,674 @@
+---
+title: "Example Visualizations"
+output:
+  html_document:
+    theme: "sandstone"
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(signal)
+library(pracma)
+```
+
+-----
+
+# `signal` : Signal Processing with R
+A set of signal processing functions originally written for 'Matlab' and 'Octave'. Includes filter generation utilities, filtering functions, resampling routines, and visualization of filter models. It also includes interpolation functions and some Matlab compatibility functions.
+
+-----
+
+## `an`: Complex unit phasor of the given angle in degrees
+This is a utility function to make it easier to specify phasor values as a magnitude times an angle in degrees.
+
+``` {r}
+120 * an(30) + 125 * an(-160)
+```
+
+
+-----
+
+## `Arma`: Create an autoregressive moving average (ARMA) model.
+Returns an ARMA model. The model could represent a filter or system model.
+
+The ARMA model is defined by:
+
+$$ a(L)y(t) = b(L)x(t) $$
+and can define an analog or digital model. The AR and MA polynomial coeffiicents follow the Matlab/Octave convention where the coefficients are in decreasing order of the polynomial (the opposite of the definitions for `filter` from the `stats` package and `polyroot` from the `base` package). For an analog model, 
+
+$$ H(s) = \frac{a}{b} $$
+
+For a z-plane digital model,
+
+$$ H(z) = \frac{a}{b} $$
+`as.Arma` converts from other forms, including `Zpg` and `Ma`.
+
+``` {r}
+filt <- Arma(b = c(1, 2, 1)/3, a = c(1, 1))
+zplane(filt)
+```
+
+-----
+
+## `bilinear` : Bilinear transformation
+Transform an s-plane filter specification into a z-plane specification.
+
+-----
+
+## `butter` : Generate a Butterworth filter.
+Generate Butterworth filter polynomial coefficients. Because `butter` is generic, it can be extended to accept other inputs, using `buttord` to generate filter criteria.
+
+``` {r}
+bf <- butter(4, 0.1)
+freqz(bf)
+zplane(bf)
+```
+
+-----
+
+## `buttord` : Butterworth filter order and cutoff
+Compute Butterworth filter order and cutoff for the desired response characteristics.
+
+``` {r}
+Fs <- 10000
+btord <- buttord(1000/(Fs/2), 1200/(Fs/2), 0.5, 29)
+plot(c(0, 1000, 1000, 0, 0), c(0, 0, -0.5, -0.5, 0),
+type = "l", xlab = "Frequency (Hz)", ylab = "Attenuation (dB)")
+bt <- butter(btord)
+plot(c(0, 1000, 1000, 0, 0), c(0, 0, -0.5, -0.5, 0),
+type = "l", xlab = "Frequency (Hz)", ylab = "Attenuation (dB)",
+col = "red", ylim = c(-10,0), xlim = c(0,2000))
+hf <- freqz(bt, Fs = Fs)
+lines(hf$f, 20*log10(abs(hf$h)))
+```
+
+-----
+
+## `cheblord`: Chebyshev type-I filter order and cutoff
+Compute discrete Chebyshev type-I filter order and cutoff for the desired response characteristics.
+
+``` {r}
+Fs <- 10000
+chord <- cheb1ord(1000/(Fs/2), 1200/(Fs/2), 0.5, 29)
+plot(c(0, 1000, 1000, 0, 0), c(0, 0, -0.5, -0.5, 0),
+type = "l", xlab = "Frequency (Hz)", ylab = "Attenuation (dB)")
+ch1 <- cheby1(chord)
+plot(c(0, 1000, 1000, 0, 0), c(0, 0, -0.5, -0.5, 0),
+type = "l", xlab = "Frequency (Hz)", ylab = "Attenuation (dB)",
+col = "red", ylim = c(-10,0), xlim = c(0,2000))
+hf <- freqz(ch1, Fs = Fs)
+lines(hf$f, 20*log10(abs(hf$h)))
+```
+
+-----
+
+## `chebwin` : Dolph-Chebyshev window coefficients
+Returns the filter coefficients of the n-point Dolph-Chebyshev window with a given attenuation.
+
+``` {r}
+plot(chebwin(50, 100))
+```
+
+-----
+
+## `cheby1` : Generate a Chebyshev filter.
+Generate Chebyshev type I or type II filter coefficients with specified dB of pass band ripple. Because `cheby1` and `cheby2` are generic, they can be extended to accept other inputs, using `cheblord` to generate filter criteria.
+
+``` {r}
+# compare the frequency responses of 5th-order Butterworth and Chebyshev filters.
+bf <- butter(5, 0.1)
+cf <- cheby1(5, 3, 0.1)
+bfr <- freqz(bf)
+cfr <- freqz(cf)
+plot(bfr$f/pi, 20 * log10(abs(bfr$h)), type = "l", ylim = c(-40, 0),
+xlim = c(0, .5), xlab = "Frequency", ylab = c("dB"))
+lines(cfr$f/pi, 20 * log10(abs(cfr$h)), col = "red")
+# compare type I and type II Chebyshev filters.
+c1fr <- freqz(cheby1(5, .5, 0.5))
+c2fr <- freqz(cheby2(5, 20, 0.5))
+plot(c1fr$f/pi, abs(c1fr$h), type = "l", ylim = c(0, 1),
+xlab = "Frequency", ylab = c("Magnitude"))
+lines(c2fr$f/pi, abs(c2fr$h), col = "red")
+```
+
+-----
+
+## `chirp` : A chirp signal
+Generate a chirp signal. A chirp signal is a frequency swept cosine wave.
+
+``` {r}
+ch <- chirp(seq(0, 0.6, len=5000))
+plot(ch, type = "l")
+# Shows a quadratic chirp of 400 Hz at t=0 and 100 Hz at t=10
+# Time goes from -2 to 15 seconds.
+specgram(chirp(seq(-2, 15, by=0.001), 400, 10, 100, "quadratic"))
+# Shows a logarithmic chirp of 200 Hz at t=0 and 500 Hz at t=2
+# Time goes from 0 to 5 seconds at 8000 Hz.
+specgram(chirp(seq(0, 5, by=1/8000), 200, 2, 500, "logarithmic"))
+```
+
+-----
+
+## `conv` : Convolution
+A Matlab/Octave compatible convolution function that uses the Fast Fourier Transform.
+
+``` {r}
+conv(c(1,2,3), c(1,2))
+conv(c(1,2), c(1,2,3))
+conv(c(1,-2), c(1,2))
+```
+
+-----
+
+## `decimate` : Decimate or downsample a signal
+Downsample a signal by a factor, using an FIR or IIR filter. By default, an order 8 Chebyshev type I filter is used or a 30-point FIR filter if `ftype` is `fir`. Note that `q` must be an integer for this rate change method.
+
+``` {r}
+# The signal to decimate starts away from zero, is slowly varying
+# at the start and quickly varying at the end, decimate and plot.
+# Since it starts away from zero, you will see the boundary
+# effects of the antialiasing filter clearly. You will also see
+# how it follows the curve nicely in the slowly varying early
+# part of the signal, but averages the curve in the quickly
+# varying late part of the signal.
+t <- seq(0, 2, by = 0.01)
+x <- chirp(t, 2, 0.5, 10, 'quadratic') + sin(2*pi*t*0.4)
+y <- decimate(x, 4) # factor of 4 decimation
+plot(t, x, type = "l")
+lines(t[seq(1,length(t), by = 4)], y, col = "blue")
+```
+
+
+-----
+
+## `ellip` : Elliptic or Cauer filter
+Generate an Elliptic or Cauer filter (discrete and continuous). Because `ellip` is generic, it can be extended to accept other inputs, using `ellipord` to generate filter criteria.
+
+``` {r}
+# compare the frequency responses of 5th-order Butterworth and elliptic filters.
+bf <- butter(5, 0.1)
+ef <- ellip(5, 3, 40, 0.1)
+bfr <- freqz(bf)
+efr <- freqz(ef)
+plot(bfr$f, 20 * log10(abs(bfr$h)), type = "l", ylim = c(-50, 0),
+xlab = "Frequency, radians", ylab = c("dB"))
+lines(efr$f, 20 * log10(abs(efr$h)), col = "red")
+```
+
+-----
+
+## `ellipord` : Elliptic filter order and cutoff
+Compute discrete elliptic filter order and cutoff or the desired response characteristics.
+
+``` {r}
+Fs <- 10000
+elord <- ellipord(1000/(Fs/2), 1200/(Fs/2), 0.5, 29)
+plot(c(0, 1000, 1000, 0, 0), c(0, 0, -0.5, -0.5, 0),
+type = "l", xlab = "Frequency (Hz)", ylab = "Attenuation (dB)")
+el1 <- ellip(elord)
+plot(c(0, 1000, 1000, 0, 0), c(0, 0, -0.5, -0.5, 0),
+type = "l", xlab = "Frequency (Hz)", ylab = "Attenuation (dB)",
+col = "red", ylim = c(-35,0), xlim = c(0,2000))
+lines(c(5000, 1200, 1200, 5000, 5000), c(-1000, -1000, -29, -29, -1000),
+col = "red")
+hf <- freqz(el1, Fs = Fs)
+lines(hf$f, 20*log10(abs(hf$h)))
+```
+
+-----
+
+## `fftfilt` : Filters with an FIR filter using the FFT
+If `n` is not specified explicitly, we do not use the overlap-add method at all because loops are really slow. Otherwise, we only ensure that the number of points in the FFT is the smallest power of two larger than `n` and `length(b)`.
+
+``` {r}
+t <- seq(0, 1, len = 100) # 1 second sample
+x <- sin(2*pi*t*2.3) + 0.25*rnorm(length(t)) # 2.3 Hz sinusoid+noise
+z <- fftfilt(rep(1, 10)/10, x) # apply 10-point averaging filter
+plot(t, x, type = "l")
+lines(t, z, col = "red")
+```
+
+-----
+
+## `filter` : Filter a signal
+Generic filtering function. The default is to filter with an ARMA filter of given coefficients. The default filtering operation follows Matlab/Octave conventions.
+
+``` {r}
+bf <- butter(3, 0.1) # 10 Hz low-pass filter
+t <- seq(0, 1, len = 100) # 1 second sample
+x <- sin(2*pi*t*2.3) + 0.25*rnorm(length(t)) # 2.3 Hz sinusoid+noise
+z <- filter(bf, x) # apply filter
+plot(t, x, type = "l")
+lines(t, z, col = "red")
+```
+
+-----
+
+## `FilterOfOrder` : Filter of given order and specifications
+IIR filter specifications, including order, frequency cutoff, type, and possibly others.
+
+-----
+
+## `filtfilt` : Forward and reverse filter a signal
+Using two passes, forward and reverse filter a signal. This corrects for phase distortion introduced by a one-pass filter, though it does square the magnitude response in the process. That’s the theory at least. In practice the phase correction is not perfect, and magnitude response is distorted, particularly in the stop band.
+
+In this version, we zero-pad the end of the signal to give the reverse filter time to ramp up to the level at the end of the signal. Unfortunately, the degree of padding required is dependent on the nature of the filter and not just its order, so this function needs some work yet - and is in the state of the year 2000 version of the Octave code.
+
+Since `filtfilt` is generic, it can be extended to call other filter types.
+
+``` {r}
+bf <- butter(3, 0.1) # 10 Hz low-pass filter
+t <- seq(0, 1, len = 100) # 1 second sample
+x <- sin(2*pi*t*2.3) + 0.25*rnorm(length(t))# 2.3 Hz sinusoid+noise
+y <- filtfilt(bf, x)
+z <- filter(bf, x) # apply filter
+plot(t, x)
+points(t, y, col="red")
+points(t, z, col="blue")
+legend("bottomleft", legend = c("data", "filtfilt", "filter"),
+pch = 1, col = c("black", "red", "blue"), bty = "n")
+```
+
+-----
+
+## `fir1` : FIR filter generation
+FIR filter coefficients for a filter with the given order and frequency cutoff.
+
+``` {r}
+freqz(fir1(40, 0.3))
+freqz(fir1(10, c(0.3, 0.5), "stop"))
+freqz(fir1(10, c(0.3, 0.5), "pass"))
+```
+
+-----
+
+## `fir2` : FIR filter generation
+FIR filter coefficients for a filter with the given order and frequency cutoffs.
+
+``` {r}
+f <- c(0, 0.3, 0.3, 0.6, 0.6, 1)
+m <- c(0, 0, 1, 1/2, 0, 0)
+fh <- freqz(fir2(100, f, m))
+op <- par(mfrow = c(1, 2))
+plot(f, m, type = "b", ylab = "magnitude", xlab = "Frequency")
+lines(fh$f / pi, abs(fh$h), col = "blue")
+# plot in dB:
+plot(f, 20*log10(m+1e-5), type = "b", ylab = "dB", xlab = "Frequency")
+lines(fh$f / pi, 20*log10(abs(fh$h)), col = "blue")
+par(op)
+```
+
+
+-----
+
+## `freqs` : s-plane frequency response
+Compute the s-plane frequency response of an ARMA model (IIR filter). When results of `freqs` are printed, `freqs_plot` will be called to display frequency plots of magnitude
+and phase. As with `lattice` plots, automatic printing does not work inside loops and function calls, so explicit calls to print are needed there.
+
+``` {r}
+b <- c(1, 2)
+a <- c(1, 1)
+w <- seq(0, 4, length=128)
+freqs(b, a, w)
+```
+
+-----
+
+## `freqz` : z-plane frequency response
+Compute the z-plane frequency response of an ARMA model or IIR filter. For fastest computation, n should factor into a small number of small primes.
+
+When results of `freqz` are printed, `freqz_plot` will be called to display frequency plots of magnitude and phase. As with `lattice` plots, automatic printing does not work inside loops and function calls, so explicit calls to print or plot are needed there.
+
+``` {r}
+b <- c(1, 0, -1)
+a <- c(1, 0, 0, 0, 0.25)
+freqz(b, a)
+```
+
+-----
+
+## `grpdelay` : Group delay of a filter or model
+The group delay of a filter or model. The group delay is the time delay for a sinusoid at a given frequency. For fastest computation, `n` should factor into a small number of small primes.
+
+If the denominator of the computation becomes too small, the group delay is set to zero. (The group delay approaches infinity when there are poles or zeros very close to the unit circle in the z plane.)
+
+When results of `grpdelay` are printed, the group delay will be plotted. As with `lattice` plots, automatic printing does not work inside loops and function calls, so explicit calls to print or plot are needed there.
+
+``` {r}
+# Two Zeros and Two Poles
+b <- poly(c(1/0.9*exp(1i*pi*0.2), 0.9*exp(1i*pi*0.6)))
+a <- poly(c(0.9*exp(-1i*pi*0.6), 1/0.9*exp(-1i*pi*0.2)))
+gpd <- grpdelay(b, a, 512, whole = TRUE, Fs = 1)
+print(gpd)
+plot(gpd)
+```
+
+-----
+
+## `ifft` : Inverse FFT
+Matlab/Octave-compatible inverse FFT. Does not attempt to make results real.
+
+``` {r}
+ifft(fft(1:4))
+```
+
+-----
+
+## `impz` : Impulse-response characteristics
+Impulse-response characteristics of a discrete filter. When results of `impz` are printed, the impulse response will be plotted. As with `lattice` plots, automatic printing does not work inside loops and function calls, so explicit calls to print or plot are needed there.
+
+``` {r}
+bt <- butter(5, 0.3)
+impz(bt)
+impz(ellip(5, 0.5, 30, 0.3))
+```
+
+
+-----
+
+## `interp` : Interpolate / Increase the sample rate
+Upsample a signal by a constant factor by using an FIR filter to interpolate between points. It uses an order `2*q*n+1` FIR filter to interpolate between samples.
+
+``` {r}
+# The graph shows interpolated signal following through the
+# sample points of the original signal.
+t <- seq(0, 2, by = 0.01)
+x <- chirp(t, 2, 0.5, 10, 'quadratic') + sin(2*pi*t*0.4)
+y <- interp(x[seq(1, length(x), by = 4)], 4, 4, 1) # interpolate a sub-sample
+plot(t, x, type = "l")
+idx <- seq(1,length(t),by = 4)
+lines(t, y[1:length(t)], col = "blue")
+points(t[idx], y[idx], col = "blue", pch = 19)
+```
+
+-----
+
+## `interp1` : Interpolation
+Interpolation methods, including linear, spline, and cubic interpolation.
+
+``` {r}
+
+```
+
+-----
+
+## `kaiser` : Kaiser window
+Returns the filter coefficients of the n-point Kaiser window with parameter beta.
+
+``` {r}
+plot(kaiser(101, 2), type = "l", ylim = c(0,1))
+lines(kaiser(101, 10), col = "blue")
+lines(kaiser(101, 50), col = "green")
+```
+
+-----
+
+## `kaiserord` : Parameters for an FIR filter from a Kaiser window
+Returns the parameters needed for fir1 to produce a filter of the desired specification from a Kaiser window.
+
+``` {r}
+Fs <- 11025
+op <- par(mfrow = c(2, 2), mar = c(3, 3, 1, 1))
+for (i in 1:4) {
+switch(i,
+"1" = {
+bands <- c(1200, 1500)
+mag <- c(1, 0)
+dev <- c(0.1, 0.1)
+},
+"2" = {
+bands <- c(1000, 1500)
+mag <- c(0, 1)
+dev <- c(0.1, 0.1)
+},
+"3" = {
+bands <- c(1000, 1200, 3000, 3500)
+mag <- c(0, 1, 0)
+dev <- 0.1
+},
+"4" = {
+bands <- 100 * c(10, 13, 15, 20, 30, 33, 35, 40)
+mag <- c(1, 0, 1, 0, 1)
+dev <- 0.05
+})
+}
+kaisprm <- kaiserord(bands, mag, dev, Fs)
+with(kaisprm, {
+d <<- max(1, trunc(n/10))
+if (mag[length(mag)]==1 && (d %% 2) == 1)
+d <<- d+1
+f1 <<- freqz(fir1(n, Wc, type, kaiser(n+1, beta), 'noscale'),
+Fs = Fs)
+f2 <<- freqz(fir1(n-d, Wc, type, kaiser(n-d+1, beta), 'noscale'),
+Fs = Fs)
+})
+plot(f1$f,abs(f1$h), col = "blue", type = "l",
+xlab = "", ylab = "")
+lines(f2$f,abs(f2$h), col = "red")
+legend("right", paste("order", c(kaisprm$n-d, kaisprm$n)),
+col = c("red", "blue"), lty = 1, bty = "n")
+b <- c(0, bands, Fs/2)
+for (i in seq(2, length(b), by=2)) {
+hi <- mag[i/2] + dev[1]
+lo <- max(mag[i/2] - dev[1], 0)
+lines(c(b[i-1], b[i], b[i], b[i-1], b[i-1]), c(hi, hi, lo, lo, hi))
+}
+par(op)
+
+```
+
+-----
+
+## `levinson` : Durbin-Levinson Recursion
+Perform Durbin-Levinson recursion on a vector or matrix.
+
+-----
+
+## `Ma` : Create a moving average (MA) model.
+Returns a moving average MA model. The model could represent a filter or system model.
+
+-----
+
+## `medfilt1` : Median filter
+Deprecated! Performs an n-point running median. For Matlab/Octave compatibility.
+
+``` {r}
+t <- seq(0, 1, len=100) # 1 second sample
+x <- sin(2*pi*t*2.3) + 0.25*rlnorm(length(t), 0.5) # 2.3 Hz sinusoid+noise
+plot(t, x, type = "l")
+# 3-point filter
+lines(t, medfilt1(x), col="red", lwd=2)
+# 7-point filter
+lines(t, filter(MedianFilter(7), x), col = "blue", lwd=2) # another way to call it
+```
+
+-----
+
+## `pchip` : Piecewise cubic hermite interpolation
+In contrast to spline, pchip preserves the monotonicity of x and y.
+
+``` {r}
+xf <- seq(0, 11, length=500)
+yf <- sin(2*pi*xf/5)
+xp <- c(0:10)
+yp <- sin(2*pi*xp/5)
+pch <- pchip(xp, yp, xf)
+plot(xp, yp, xlim = c(0, 11))
+lines(xf, pch, col = "orange")
+```
+
+-----
+
+## `poly` : Polynomial given roots
+Coefficients of a polynomial when roots are given or the characteristic polynomial of a matrix.
+
+``` {r}
+poly(c(1, -1))
+poly(roots(1:3))
+poly(matrix(1:9, 3, 3))
+```
+
+-----
+
+## `polyval` : Evaluate a polynomial
+Evaluate a polynomial at given points.
+
+```{r}
+polyval(c(1, 0, -2), 1:3) # s^2 - 2
+```
+
+-----
+
+## `remez` : Parks-McClellan optimal FIR filter design
+
+``` {r}
+f1 <- remez(15, c(0, 0.3, 0.4, 1), c(1, 1, 0, 0))
+freqz(f1)
+```
+
+-----
+
+## `resample` : Change the sampling rate of a signal
+Resample using bandlimited interpolation.
+
+``` {r}
+xf <- seq(0, 10.95, by=0.05)
+yf <- sin(2*pi*xf/5)
+xp <- 0:10
+yp <- sin(2*pi*xp/5)
+r <- resample(yp, xp[2], xf[2])
+plot(xf, yf, type = "l", col = "blue")
+title("confirm that the resampled function matches the original")
+lines(xf, r[1:length(xf)], col = "red")
+points(xp,yp, pch = 19, col = "blue")
+legend("bottomleft", c("Original", "Resample", "Data"), col = c("blue", "red", "blue"), pch = c(NA, NA, 19), lty = c(1, 1, NA), bty = "n")
+```
+
+-----
+
+## `roots` : Roots of a polynomial
+
+``` {r}
+roots(1:3)
+polyroot(3:1) # should be the same
+poly(roots(1:3))
+```
+
+-----
+
+## `sftrans` : Transform filter band edges
+Transform band edges of a generic lowpass filter to a filter with different band edges and to other filter types (high pass, band pass, or band stop).
+
+-----
+
+## `sgolay` : Savitzky-Golay smoothing filters
+Computes the filter coefficients for all Savitzky-Golay smoothing filters.
+
+-----
+
+## `sgolayfilt` : Apply a Savitzky-Golay smoothing filter
+Smooth data with a Savitzky-Golay smoothing filter. These filters are particularly good at preserving lineshape while removing high frequency squiggles.
+
+``` {r}
+# Compare a 5 sample averager, an order-5 butterworth lowpass
+# filter (cutoff 1/3) and sgolayfilt(x, 3, 5), the best cubic
+# estimated from 5 points.
+bf <- butter(5,1/3)
+x <- c(rep(0,15), rep(10, 10), rep(0, 15))
+sg <- sgolayfilt(x)
+plot(sg, type="l")
+lines(filtfilt(rep(1, 5)/5,1,x), col = "red") # averaging filter
+lines(filtfilt(bf,x), col = "blue") # butterworth
+points(x, pch = "x") # original data
+```
+
+-----
+
+## `signal-internal` : Internal or uncommented functions
+
+-----
+
+## `specgram` : Spectrogram plot
+Generate a spectrogram for the signal. This chops the signal into overlapping slices, windows each slice and applies a Fourier transform to determine the frequency components at that slice.
+
+``` {r}
+specgram(chirp(seq(-2, 15, by = 0.001), 400, 10, 100, 'quadratic'))
+specgram(chirp(seq(0, 5, by = 1/8000), 200, 2, 500, "logarithmic"), Fs = 8000)
+data(wav) # contains wav$rate, wav$sound
+Fs <- wav$rate
+step <- trunc(5*Fs/1000) # one spectral slice every 5 ms
+window <- trunc(40*Fs/1000) # 40 ms data window
+fftn <- 2^ceiling(log2(abs(window))) # next highest power of 2
+spg <- specgram(wav$sound, fftn, Fs, window, window-step)
+S <- abs(spg$S[2:(fftn*4000/Fs),]) # magnitude in range 0<f<=4000 Hz.
+S <- S/max(S) # normalize magnitude so that max is 0 dB.
+S[S < 10^(-40/10)] <- 10^(-40/10) # clip below -40 dB.
+S[S > 10^(-3/10)] <- 10^(-3/10) # clip above -3 dB.
+image(t(20*log10(S)), axes = FALSE) #, col = gray(0:255 / 255))
+```
+
+-----
+
+## `spencer` : Spencer filter
+Spencer’s 15-point moving average filter.
+
+-----
+
+## `unwrap` : Unwrap radian phases
+Unwrap radian phases by adding multiples of 2*pi as appropriate to remove jumps.
+
+``` {r}
+phase <- c(seq(0, 2*pi, length=500), seq(0, 2*pi, length=500))
+plot(phase, type = "l", ylim = c(0, 4*pi))
+lines(unwrap(phase), col = "blue")
+```
+
+-----
+
+## `wav` : Example wav file
+Example .wav file audio waveshape from Octave.
+
+``` {r}
+data(wav)
+str(wav)
+```
+
+-----
+
+## `Windowing functions`
+A variety of generally Matlab/Octave compatible filter generation functions, including Bartlett, Blackman, Hamming, Hanning, and triangular.
+
+``` {r}
+n <- 51
+op <- par(mfrow = c(3,3))
+plot(bartlett(n), type = "l", ylim = c(0,1))
+plot(blackman(n), type = "l", ylim = c(0,1))
+plot(boxcar(n), type = "l", ylim = c(0,1))
+plot(flattopwin(n), type = "l", ylim = c(0,1))
+plot(gausswin(n, 5), type = "l", ylim = c(0,1))
+plot(hanning(n), type = "l", ylim = c(0,1))
+plot(hamming(n), type = "l", ylim = c(0,1))
+plot(triang(n), type = "l", ylim = c(0,1))
+par(op)
+```
+
+-----
+
+## `Zpg` : Zero-pole-gain model
+Zero-pole-gain model of an ARMA filter.
+
+-----
+
+## `zplane` : Pole-zero plot
+Plot the poles and zeros of a model or filter.
+
+``` {r}
+filt <- ellip(5, 0.5, 20, .2)
+zplane(filt)
+```
+
+
+&copy; [Paige Bailey](http://www.dynamicwebpaige.com)
