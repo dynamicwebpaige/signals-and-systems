@@ -39,11 +39,11 @@ The ARMA model is defined by:
 $$ a(L)y(t) = b(L)x(t) $$
 and can define an analog or digital model. The AR and MA polynomial coeffiicents follow the Matlab/Octave convention where the coefficients are in decreasing order of the polynomial (the opposite of the definitions for `filter` from the `stats` package and `polyroot` from the `base` package). For an analog model, 
 
-$$ H(s) = \frac{a}{b} $$
+$$ H(s) = \frac{b_{1}s^{m-1} + b_{2}s^{m-2} + ... + b_{m}}{a_{1}s^{n-1} + a_{2}s^{n-2} + ... + a_{n}} $$
 
 For a z-plane digital model,
 
-$$ H(z) = \frac{a}{b} $$
+$$ H(z) = \frac{b_{1}+b_{2}z^{-1} + ... + b_{m}z^{-m+1}}{a_{1}+a_{2}z^{-1} + ... + a_{n}z^{-n+1}} $$
 `as.Arma` converts from other forms, including `Zpg` and `Ma`.
 
 ``` {r}
@@ -55,6 +55,9 @@ zplane(filt)
 
 ## `bilinear` : Bilinear transformation
 Transform an s-plane filter specification into a z-plane specification.
+
+$$ z = \frac{1 + sT/2}{1-sT/2} $$
+$$ s = \frac{T}{2} \frac{z-1}{z+1} $$
 
 -----
 
@@ -671,4 +674,4 @@ zplane(filt)
 ```
 
 
-&copy; [Paige Bailey](http://www.dynamicwebpaige.com)
+&copy; MIT License, 2017 - [Paige Bailey](http://www.dynamicwebpaige.com)
