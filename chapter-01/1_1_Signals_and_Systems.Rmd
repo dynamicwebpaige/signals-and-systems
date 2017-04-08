@@ -117,7 +117,9 @@ $$ ||f||_{\infty} = \underset{t\in \mathbb{R}}{sup} |f(t)|, $$
 
 which is the least upper bound of $|f(t)|$. A signal $f$ is said to belong to the vector space $L_{p}(\mathbb{R})$ if $||f||_{p} \leq \infty$.
 
-##### Example 1.3
+------
+
+##### **Example 1.3**
 
 For example, consider the function defined by 
 
@@ -125,11 +127,50 @@ $$ |x| = \left\{ \begin{array}{ll} 1/t & 1 \leq t \\ 0 & otherwise \end{array} \
 
 The $L_{1}$ norm is
 
+$$ ||f||_{1} = \int_{-\infty}^{\infty}|f(t)| dt = \int_{-\infty}^{\infty}\frac{1}{t}dt=\infty $$
+
 The $L_{2}$ norm is
+
+$$ ||f||_{2} = (\int_{-\infty}^{\infty}|f(t)|^{2} dt)^\frac{1}{2} = (\int_{-\infty}^{\infty}\frac{1}{t^{2}}dt^\frac{1}{2})= 1. $$
 
 The $L_{\infty}$ norm is
 
+$$ ||f||_{\infty} = \underset{t\in \mathbb{R}}{sup} |f(t)| = \underset{t\in \mathbb{R}[1,\infty)}{sup} \frac{1}{t} = 1. $$
+
 ------
+
+####_Finite Length, Continuous Time Signals_
+The most commonly encountered notion of the energy of a signal defined on $\mathbb{R}[a,b]$ is the $L_{2}$ norm defined by the square root of the integral of the square of the signal, for which the notation is
+
+$$ ||f||_{2} = (\int_{a}^{b}|f(t)|^{2}dt)^\frac{1}{2}. $$ 
+However, this idea can be generalized through definition of the $L_{p}$ norm, which is given by
+
+$$ ||f||_{p} = (\int_{a}^{b}|f(t)|^{p}dt)^\frac{1}{p} $$
+for all $1 \leq p \leq \infty$. Because of the behavior of this expression as $p$ approaches $\infty$, we furthermore define
+
+$$ ||f||_{\infty} = \underset{t\in \mathbb{R}[a,b]}{sup} |f(t)|, $$
+which is the least upper bound of $|f(t)|$. A signal $f$ is said to belong to the vector space $L_{p} (\mathbb{R}[a,b])$ if $||f||_{p} < \infty$. The periodic extension of such a signal would have infinite energy but finite power.
+
+------
+
+##### **Example 1.4**
+For example, consider the function defined on $\mathbb{R}[-5, 3]$ by 
+
+$$ f(t) = \left\{ \begin{array}{ll} t & -5 \lt t \lt 3 \\ 0 & otherwise \end{array} \right. $$
+The $L_{1}$ norm is
+
+$$ ||f||_{1} = \int_{-5}^{3}|f(t)|dt| = \int_{-5}^{3}|t|dt = 17. $$
+The $L_{2}$ norm is
+
+$$ ||f||_{2} = (\int_{-5}^{3}|f(t)|^{2} dt)^\frac{1}{2} = (\int_{-5}^{3}|t|^{2}dt)^\frac{1}{2} \approx 7.12. $$
+The $L_{\infty}$ norm is
+
+$$ ||f||_{\infty} = \underset{t\in \mathbb{R}[-5,3]}{sup} |t| = 5. $$
+
+------
+
+####_Infinite Length, Discrete Time Signals_
+The most commonly encountered notion of the energy of a signal defined on $\mathbb{Z}$
 
 ------
 
