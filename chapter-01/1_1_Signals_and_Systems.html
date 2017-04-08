@@ -285,9 +285,34 @@ div.tocify {
 <div id="signal-size-and-norms" class="section level2">
 <h2><strong>Signal Size and Norms</strong></h2>
 <hr />
+<div id="introduction-1" class="section level3">
+<h3>Introduction</h3>
+<p>The “size” of a signal would involve some notion of its strength. We use the mathematical concept of the norm to quantiy this for both continuous-time and discrete-time signals. As there are several types of norms that can be defined for signals, there are several different conceptions of signal size.</p>
+<hr />
+</div>
+<div id="signal-energy" class="section level3">
+<h3>Signal Energy</h3>
+<div id="infinite-length-continuous-time-signals" class="section level4">
+<h4><em>Infinite Length, Continuous Time Signals</em></h4>
+<p>The most commonly encountered notion of the energy of a signal defined on <span class="math inline">\(\mathbb{R}\)</span> is the <span class="math inline">\(L_{2}\)</span> norm defined by the square root of the integral of the square of the signal, for which the notation</p>
+<p><span class="math display">\[ ||f||_{2} = (\int_{-\infty}^{\infty}{|f(t)|^{2} dt)^\frac{1}{2}} \]</span> However, this idea can be generalized through the definition of the <span class="math inline">\(L_{p}\)</span> norm, which is given by</p>
+<p><span class="math display">\[ ||f||_{p} = (\int_{-\infty}^{\infty}{|f(t)|^{p} dt)^\frac{1}{p}} \]</span> for all <span class="math inline">\(1 \leq p \leq \infty\)</span>. Because of the behavior of this expression as <span class="math inline">\(p\)</span> approaches <span class="math inline">\(\infty\)</span>, we furthermore define</p>
+<p><span class="math display">\[ ||f||_{\infty} = \underset{t\in \mathbb{R}}{sup} |f(t)|, \]</span></p>
+<p>which is the least upper bound of <span class="math inline">\(|f(t)|\)</span>. A signal <span class="math inline">\(f\)</span> is said to belong to the vector space <span class="math inline">\(L_{p}(\mathbb{R})\)</span> if <span class="math inline">\(||f||_{p} \leq \infty\)</span>.</p>
+<div id="example-1.3" class="section level5">
+<h5>Example 1.3</h5>
+<p>For example, consider the function defined by</p>
+<p><span class="math display">\[ |x| = \left\{ \begin{array}{ll} 1/t &amp; 1 \leq t \\ 0 &amp; otherwise \end{array} \right. \]</span></p>
+<p>The <span class="math inline">\(L_{1}\)</span> norm is</p>
+<p>The <span class="math inline">\(L_{2}\)</span> norm is</p>
+<p>The <span class="math inline">\(L_{\infty}\)</span> norm is</p>
+<hr />
 <hr />
 <div id="about-github-repo-richard-baraniuk" class="section level6">
 <h6>About: <a href="http://www.github.com/dynamicwebpaige/signals-and-systems">Github Repo</a>, <a href="http://richb.rice.edu/signal-processing/">Richard Baraniuk</a></h6>
+</div>
+</div>
+</div>
 </div>
 </div>
 

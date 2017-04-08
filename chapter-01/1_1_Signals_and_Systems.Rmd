@@ -97,6 +97,40 @@ A **deterministic signal** is a signal in which each value of the signal is fixe
 
 ------
 
+###Introduction
+The "size" of a signal would involve some notion of its strength. We use the mathematical concept of the norm to quantiy this for both continuous-time and discrete-time signals. As there are several types of norms that can be defined for signals, there are several different conceptions of signal size.
+
+------
+
+###Signal Energy
+
+####_Infinite Length, Continuous Time Signals_
+The most commonly encountered notion of the energy of a signal defined on $\mathbb{R}$ is the $L_{2}$ norm defined by the square root of the integral of the square of the signal, for which the notation
+
+$$ ||f||_{2} = (\int_{-\infty}^{\infty}{|f(t)|^{2} dt)^\frac{1}{2}} $$
+However, this idea can be generalized through the definition of the $L_{p}$ norm, which is given by
+
+$$ ||f||_{p} = (\int_{-\infty}^{\infty}{|f(t)|^{p} dt)^\frac{1}{p}} $$
+for all $1 \leq p \leq \infty$. Because of the behavior of this expression as $p$ approaches $\infty$, we furthermore define
+
+$$ ||f||_{\infty} = \underset{t\in \mathbb{R}}{sup} |f(t)|, $$
+
+which is the least upper bound of $|f(t)|$. A signal $f$ is said to belong to the vector space $L_{p}(\mathbb{R})$ if $||f||_{p} \leq \infty$.
+
+##### Example 1.3
+
+For example, consider the function defined by 
+
+$$ |x| = \left\{ \begin{array}{ll} 1/t & 1 \leq t \\ 0 & otherwise \end{array} \right. $$
+
+The $L_{1}$ norm is
+
+The $L_{2}$ norm is
+
+The $L_{\infty}$ norm is
+
+------
+
 ------
 
 ######About: [Github Repo](http://www.github.com/dynamicwebpaige/signals-and-systems), [Richard Baraniuk](http://richb.rice.edu/signal-processing/)
