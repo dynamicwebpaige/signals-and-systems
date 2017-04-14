@@ -15,3 +15,5 @@ The purpose of this repository is to provide interactive, explorable visual acco
 ## R Packages
 `signal`
 `shiny`
+`wavelets`
+`biwavelet`
